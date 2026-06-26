@@ -44,6 +44,29 @@ def register():
         return "User Created Successfully!"
 
     return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+        password = request.form["password"]
+
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+
+            if user.password_hash == password:
+                return "Login Successful!"
+
+            else:
+                return "Incorrect Password"
+
+        else:
+            return "User Not Found"
+
+    return render_template("login.html")
     
 
 if __name__=="__main__":
