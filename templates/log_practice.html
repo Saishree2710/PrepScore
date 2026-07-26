@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Log Practice</h1>
+
+<form method="POST">
+
+    <label>Topic</label>
+
+    <select id="topic" name="topic">
+
+        {% for topic in topics %}
+
+        <option value="{{ topic.topic_id }}">
+            {{ topic.topic_name }}
+        </option>
+
+        {% endfor %}
+
+    </select>
+
+    <br><br>
+
+    <label>Subtopic</label>
+
+    <select id="subtopic" name="subtopic" required>
+
+        <option value="">
+            Select a subtopic
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <label>Questions Solved</label>
+
+    <input
+        type="number"
+        name="questions_solved"
+        required
+    >
+
+    <br><br>
+
+    <button type="submit">
+
+        Save Practice
+
+    </button>
+
+</form>
+
+<script>
+
+const topicDropdown = document.getElementById("topic");
+const subtopicDropdown = document.getElementById("subtopic");
+
+function loadSubtopics(topicId){
+
+    fetch("/get-subtopics/" + topicId)
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        subtopicDropdown.innerHTML = "";
+
+        let defaultOption = document.createElement("option");
+
+        defaultOption.value = "";
+
+        defaultOption.textContent = "Select a subtopic";
+
+        subtopicDropdown.appendChild(defaultOption);
+
+        data.forEach(subtopic => {
+
+            let option = document.createElement("option");
+
+            option.value = subtopic.id;
+
+            option.textContent = subtopic.name;
+
+            subtopicDropdown.appendChild(option);
+
+        });
+
+    });
+
+}
+
+topicDropdown.addEventListener("change", function(){
+
+    loadSubtopics(this.value);
+
+});
+
+window.onload = function(){
+
+    loadSubtopics(topicDropdown.value);
+
+}
+
+</script>
+
+{% endblock %}
